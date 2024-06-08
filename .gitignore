@@ -1,0 +1,7 @@
+tmp
+bin
+.direnv
+.env
+public/styles.css
+views/**/*.go
+views/**/*.txt
