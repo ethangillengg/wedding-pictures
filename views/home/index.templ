@@ -2,10 +2,11 @@ package home
 
 import (
 	"wedding-pictures/views/layouts"
+	"github.com/markbates/goth"
 )
 
-templ Index() {
-	@layouts.Base() {
+templ Index(user goth.User) {
+	@layouts.Base(user) {
 		<p class="text-red-800 text-4xl">Hola mundo</p>
 		<h1 class="text-red-800">Hola mundo</h1>
 	}

@@ -3,6 +3,7 @@ module wedding-pictures
 go 1.22.3
 
 require (
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	github.com/a-h/parse v0.0.0-20240121214402-3caf7543159a // indirect
 	github.com/a-h/protocol v0.0.0-20230224160810-b4eec67c1c22 // indirect
 	github.com/a-h/templ v0.2.707 // indirect
@@ -29,7 +30,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/mod v0.17.0 // indirect
-	golang.org/x/oauth2 v0.17.0 // indirect
+	golang.org/x/oauth2 v0.21.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect

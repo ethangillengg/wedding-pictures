@@ -1,8 +1,9 @@
 package layouts
 
 import "wedding-pictures/views/components"
+import "github.com/markbates/goth"
 
-templ Base() {
+templ Base(user goth.User) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -14,8 +15,10 @@ templ Base() {
 			<script src="https://unpkg.com/htmx.org@1.9.9" defer></script>
 		</head>
 		<body class="antialiased">
-			@components.Navigation()
-			{ children... }
+			@components.Navigation(user)
+			<div class="py-2">
+				{ children... }
+			</div>
 		</body>
 	</html>
 }
