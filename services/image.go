@@ -64,10 +64,15 @@ func (is *ImageService) Upload(file multipart.File, headers *multipart.FileHeade
 		return fmt.Errorf("file \"%v\" (%v bytes) exceeds the upload limit of %v bytes", headers.Filename, headers.Size, is.MaxUploadBytes)
 	}
 
+	name := headers.Filename
+
+	fullPath := filepath.Join(is.FullDir, name)
+	smallPath := filepath.Join(is.SmallDir, strings.Replace(name, filepath.Ext(name), ".webp", 1))
+	basePath := filepath.Join(is.BaseDir, strings.Replace(name, filepath.Ext(name), ".webp", 1))
+
 	// Create file
+	dst, err := os.Create(fullPath)
 	defer file.Close()
-	path := filepath.Join(is.FullDir, headers.Filename)
-	dst, err := os.Create(path)
 	defer dst.Close()
 	if err != nil {
 		return err
@@ -77,67 +82,47 @@ func (is *ImageService) Upload(file multipart.File, headers *multipart.FileHeade
 	if _, err := io.Copy(dst, file); err != nil {
 		return err
 	}
+	dst.Sync()
 
-	go is.resize(headers.Filename)
-	go is.convert(headers.Filename)
+	// save 30x30 blurred thumbnail
+	go is.process(fullPath, smallPath, bimg.Options{
+		Width:   10,
+		Height:  10,
+		Quality: 1,
+		Crop:    true,
+		Gravity: bimg.GravitySmart,
+		Type:    bimg.WEBP,
+	})
+	//
+	// save web-friendly version
+	go is.process(fullPath, basePath, bimg.Options{
+		Width:  1000,
+		Height: 1000,
+
+		Crop:    true,
+		Gravity: bimg.GravitySmart,
+		Type:    bimg.WEBP,
+	})
+
+	slog.Info("Saved full image to disk", "fullPath", fullPath)
 
 	return nil
 }
 
-func (is *ImageService) convert(fileName string) (string, error) {
-	opts := bimg.Options{
-		Crop: true,
-		Type: bimg.WEBP,
-	}
+func (is *ImageService) process(src string, dest string, opts bimg.Options) error {
+	slog.Info("Processing image", "dest", dest)
 
-	path := filepath.Join("./", is.FullDir, fileName)
-
-	slog.Debug("Converting", "path", path)
-
-	buffer, err := bimg.Read(path)
-	if err != nil {
-		slog.Error("error reading image file", "err", err)
-		return "", err
-	}
-
-	newImage, err := bimg.NewImage(buffer).Process(opts)
-	if err != nil {
-		slog.Error("error resizing image buffer", "err", err)
-		return "", err
-	}
-
-	// replace ext with webp
-	newName := strings.Replace(fileName, filepath.Ext(fileName), ".webp", 1)
-	newPath := filepath.Join(is.BaseDir, newName)
-	bimg.Write(newPath, newImage)
-
-	return newName, nil
-}
-
-func (is *ImageService) resize(fileName string) {
-	opts := bimg.Options{
-		Width:  30,
-		Height: 30,
-		Crop:   true,
-		Type:   bimg.WEBP,
-	}
-
-	path := filepath.Join("./", is.FullDir, fileName)
-
-	slog.Debug("Resizing", "path", path)
-
-	buffer, err := bimg.Read(path)
+	bytes, err := bimg.Read(src)
 	if err != nil {
 		slog.Error("error reading image file", "err", err)
 	}
 
-	newImage, err := bimg.NewImage(buffer).Process(opts)
+	img, err := bimg.NewImage(bytes).Process(opts)
 	if err != nil {
-		slog.Error("error resizing image buffer", "err", err)
+		slog.Error("error processing image", "dest", dest, "err", err)
+		return err
 	}
 
-	// replace ext with webp
-	newName := strings.Replace(fileName, filepath.Ext(fileName), ".webp", 1)
-	bimg.Write(filepath.Join(is.SmallDir, newName), newImage)
-
+	bimg.Write(dest, img)
+	return nil
 }
