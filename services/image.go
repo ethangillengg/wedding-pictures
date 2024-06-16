@@ -86,9 +86,8 @@ func (is *ImageService) Upload(file multipart.File, headers *multipart.FileHeade
 
 	// save 30x30 blurred thumbnail
 	go is.process(fullPath, smallPath, bimg.Options{
-		Width:   10,
-		Height:  10,
-		Quality: 1,
+		Width:   20,
+		Height:  20,
 		Crop:    true,
 		Gravity: bimg.GravitySmart,
 		Type:    bimg.WEBP,

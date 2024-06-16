@@ -9,8 +9,8 @@ css blurImg(img string) {
 
 templ GalleryImg(img string) {
 	<div class="mx-auto h-96 relative">
-		<div class={ "bg-cover bg-center h-96" , blurImg(img) }>
-			<img src={ img } class="h-full aspect-[1/1] object-cover object-center "/>
+		<div class={ "bg-cover bg-center h-96" , blurImg(img), "blur-img" }>
+			<img src={ img } class="h-full aspect-[1/1] object-cover object-center" loading="lazy"/>
 		</div>
 		<div class="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-75 bg-black transition ease-in">
 			<div

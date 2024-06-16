@@ -42,7 +42,7 @@ func NewAuthService() *AuthService {
 
 	gothic.Store = store
 
-	goth.UseProviders(google.New(googleClientId, googleClientSecret, "http://localhost:7331/auth/google"))
+	goth.UseProviders(google.New(googleClientId, googleClientSecret, "http://thinkpad:3000/auth/google"))
 
 	return &AuthService{}
 }
