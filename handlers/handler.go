@@ -7,12 +7,14 @@ import (
 
 type Handler struct {
 	as  services.AuthService
+	is  services.ImageService
 	cfg types.Config
 }
 
-func NewHandler(as services.AuthService, cfg types.Config) *Handler {
+func NewHandler(as services.AuthService, is services.ImageService, cfg types.Config) *Handler {
 	return &Handler{
 		as:  as,
+		is:  is,
 		cfg: cfg,
 	}
 }

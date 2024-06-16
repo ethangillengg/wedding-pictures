@@ -1,9 +1,6 @@
 run: build
 	@./bin/app
 
-build:
-	@go build -o bin/app .
-
 
 # run templ generation in watch mode to detect all .templ files and 
 # re-create _templ.txt files on change, then send reload event to browser. 
@@ -42,5 +39,5 @@ dev:
 # to a single binary with all its assets embedded.
 build:
 	@tailwindcss -i views/css/app.css -o ./public/styles.css
-	@go build -o bin/app_prod cmd/app/main.go
+	@go build --tags prod -o bin/main main.go
 	@echo "compiled you application with all its assets to a single binary => bin/app_prod"

@@ -15,12 +15,12 @@ func (h *Handler) HandleHome(w http.ResponseWriter, r *http.Request) error {
 		u = goth.User{}
 	}
 
-	imgDirEntries, err := os.ReadDir(h.cfg.ImgSavePath)
+	imgDirEntries, err := os.ReadDir(h.is.BaseDir)
 
 	var imgs []string
 	for _, entry := range imgDirEntries {
 		if entry.Type().IsRegular() {
-			imgs = append(imgs, filepath.Join("gallery", entry.Name()))
+			imgs = append(imgs, filepath.Join(h.is.BaseDir, entry.Name()))
 		}
 	}
 

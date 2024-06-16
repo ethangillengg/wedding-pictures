@@ -6,3 +6,4 @@ public/styles.css
 views/**/*.go
 views/**/*.txt
 uploads
+upload

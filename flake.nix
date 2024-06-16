@@ -33,6 +33,8 @@
           tailwindcss
 
           templ-pkg
+          vips
+          pkg-config
         ];
       };
     });
