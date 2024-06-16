@@ -1,13 +1,18 @@
 package handlers
 
-import "wedding-pictures/services"
+import (
+	"wedding-pictures/services"
+	"wedding-pictures/types"
+)
 
 type Handler struct {
-	as services.AuthService
+	as  services.AuthService
+	cfg types.Config
 }
 
-func NewHandler(as services.AuthService) *Handler {
+func NewHandler(as services.AuthService, cfg types.Config) *Handler {
 	return &Handler{
-		as: as,
+		as:  as,
+		cfg: cfg,
 	}
 }

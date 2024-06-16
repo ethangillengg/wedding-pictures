@@ -3,11 +3,25 @@ package home
 import (
 	"wedding-pictures/views/layouts"
 	"github.com/markbates/goth"
+	"wedding-pictures/views/components"
 )
 
-templ Index(user goth.User) {
+templ Index(user goth.User, imgs []string) {
 	@layouts.Base(user) {
-		<p class="text-red-800 text-4xl">Hola mundo</p>
-		<h1 class="text-red-800">Hola mundo</h1>
+		<form id="form" hx-encoding="multipart/form-data" hx-post="/upload">
+			<input type="file" name="file"/>
+			<button
+				class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide text-white transition-colors duration-200 rounded-md bg-neutral-950 hover:bg-neutral-900 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 focus:shadow-outline focus:outline-none"
+			>
+				Upload
+			</button>
+			<progress id="progress" value="0" max="100"></progress>
+		</form>
+		@components.Gallery(imgs)
+		<script>
+	htmx.on('#form', 'htmx:xhr:progress', function (evt) {
+		htmx.find('#progress').setAttribute('value', evt.detail.loaded / evt.detail.total * 100)
+	});
+</script>
 	}
 }

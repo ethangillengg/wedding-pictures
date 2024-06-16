@@ -6,6 +6,9 @@ templ Navigation(user goth.User) {
 	<div class="mx-auto py-2 px-1 border-b border-gray-800">
 		<div class="mx-auto container flex justify-between">
 			<span class="text-4xl">Wedding Gallery</span>
+			if user.Email != "" {
+				<a href="/" class="underline text-xl px-4 py-2">Upload </a>
+			}
 			<div class="flex gap-4 items-center">
 				if user.Email != "" {
 					<span>{ user.Email }</span>

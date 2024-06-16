@@ -12,11 +12,11 @@ templ Base(user goth.User) {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<link rel="stylesheet" href="/public/styles.css"/>
 			<link rel="icon" type="image/x-icon" href="/public/favicon.ico"/>
-			<script src="https://unpkg.com/htmx.org@1.9.9" defer></script>
+			<script src="https://unpkg.com/htmx.org@1.9.9"></script>
 		</head>
 		<body class="antialiased">
 			@components.Navigation(user)
-			<div class="py-2">
+			<div class="py-2 px-4 container">
 				{ children... }
 			</div>
 		</body>

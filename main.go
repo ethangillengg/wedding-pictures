@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"wedding-pictures/handlers"
+	"wedding-pictures/types"
 
 	"wedding-pictures/services"
 
@@ -18,27 +19,42 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
+	config := types.Config{
+		ListenAddr:     os.Getenv("LISTEN_ADDR"),
+		ImgSavePath:    "./uploads",
+		MaxUploadBytes: 1024 * 1024 * 10,
+	}
+
+	err := os.Mkdir(config.ImgSavePath, 0750)
+	if os.IsExist(err) {
+		slog.Info("upload dir already exists", "dir", config.ImgSavePath)
+	} else if err != nil {
+		log.Fatal(err)
+	}
 
 	as := services.NewAuthService()
-	h := handlers.NewHandler(*as)
+	h := handlers.NewHandler(*as, config)
 
 	r := chi.NewMux()
 	r.Use(middleware.RedirectSlashes)
+
 	r.Handle("/*", public())
+	// Serve gallery images
+	r.Handle("/gallery/*", http.StripPrefix("/gallery/", http.FileServerFS(os.DirFS(config.ImgSavePath))))
 
 	// Pages
 	r.Get("/", handlers.Make(h.HandleHome))
+	r.Post("/upload", handlers.Make(h.HandleUpload))
 
 	// Auth
 	r.Get("/auth/{provider}", handlers.Make(h.HandleProviderLogin))
 	r.Get("/auth/{provider}/callback", handlers.Make(h.HandleProviderCallback))
 	r.Get("/auth/logout", handlers.Make(h.HandleProviderLogout))
 
-	listenAddr := os.Getenv("LISTEN_ADDR")
-	slog.Info("HTTP server started", "listenAddr", listenAddr)
-
-	err := http.ListenAndServe(listenAddr, r)
+	slog.Info("HTTP server started", "config", config)
+	err = http.ListenAndServe(config.ListenAddr, r)
 	if err != nil {
+		slog.Error("failed starting server", "err", err)
 		panic("cannot start server")
 	}
 }
