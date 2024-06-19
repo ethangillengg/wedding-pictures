@@ -4,28 +4,26 @@ import "fmt"
 import "path/filepath"
 
 css blurImg(img string) {
-	background-image: { fmt.Sprintf("url('%s')", filepath.Join("upload/small", filepath.Base(img))) };
+background-image: { fmt.Sprintf("url('%s')", filepath.Join("upload/small", filepath.Base(img))) };
 }
 
 templ GalleryImg(img string) {
-	<div class="mx-auto h-96 relative">
-		<div class={ "bg-cover bg-center h-96" , blurImg(img), "blur-img" }>
-			<img src={ img } class="h-full aspect-[1/1] object-cover object-center" loading="lazy"/>
-		</div>
-		<div class="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-75 bg-black transition ease-in">
-			<div
-				class="text-white absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%] opacity-100 flex flex-col gap-2 items-center"
-			>
-				<figcaption>
-					{ filepath.Base(img) }
-				</figcaption>
-				<a
-					href={ templ.URL(fmt.Sprintf("/download/%s", filepath.Base(img))) }
-					class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide text-white transition-colors duration-200 rounded-md bg-neutral-950 hover:bg-neutral-900 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 focus:shadow-outline focus:outline-none"
-				>
-					Download
-				</a>
-			</div>
+<div class="mx-auto  relative w-full">
+	<div class={ "bg-cover bg-center" , blurImg(img), "blur-img" }>
+		<img src={ img } class="aspect-[1/1] object-cover object-center" role="presentation" loading="lazy"
+			fetchpriority="low" />
+	</div>
+	<div class="absolute top-0 left-0 w-full h-full opacity-0 hover:opacity-75 bg-black transition ease-in">
+		<div
+			class="text-white w-full absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%] opacity-100 flex flex-col gap-2 items-center">
+			<figcaption class="w-full text-center break-words">
+				{ filepath.Base(img) }
+			</figcaption>
+			<a href={ templ.URL(fmt.Sprintf("/download/%s", filepath.Base(img))) }
+				class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide text-white transition-colors duration-200 rounded-md bg-neutral-950 hover:bg-neutral-900 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 focus:shadow-outline focus:outline-none">
+				Download
+			</a>
 		</div>
 	</div>
+</div>
 }

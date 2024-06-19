@@ -1,32 +1,31 @@
 package home
 
 import (
-	"wedding-pictures/views/layouts"
-	"github.com/markbates/goth"
-	"wedding-pictures/views/components"
+"wedding-pictures/views/layouts"
+"github.com/markbates/goth"
+"wedding-pictures/views/components"
 )
 
 templ Index(user goth.User, imgs []string) {
-	@layouts.Base(user) {
-		<div class="mx-auto">
-			<form id="form" hx-encoding="multipart/form-data" hx-post="/upload" hx-target="#gallery" hx-swap="afterbegin">
-				<input type="file" name="file"/>
-				<button
-					class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide text-white transition-colors duration-200 rounded-md bg-neutral-950 hover:bg-neutral-900 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 focus:shadow-outline focus:outline-none"
-				>
-					Upload
-				</button>
-				<progress id="progress" value="0" max="100"></progress>
-			</form>
-			if user.Email != "" {
-			}
-			<div id="gallery" class="grid grid-cols-gallery mx-auto">
-				for _, img:= range imgs {
-					@components.GalleryImg(img)
-				}
-			</div>
-		</div>
-		<script>
+@layouts.Base(user) {
+<div class="mx-auto">
+	<form id="form" hx-encoding="multipart/form-data" hx-post="/upload" hx-target="#gallery" hx-swap="afterbegin">
+		<input type="file" name="file" />
+		<button
+			class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide text-white transition-colors duration-200 rounded-md bg-neutral-950 hover:bg-neutral-900 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 focus:shadow-outline focus:outline-none">
+			Upload
+		</button>
+		<progress id="progress" value="0" max="100"></progress>
+	</form>
+	if user.Email != "" {
+	}
+	<div id="gallery" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 mx-auto">
+		for _, img:= range imgs {
+		@components.GalleryImg(img)
+		}
+	</div>
+</div>
+<script>
 	htmx.on('#form', 'htmx:xhr:progress', function (evt) {
 		htmx.find('#progress').setAttribute('value', evt.detail.loaded / evt.detail.total * 100)
 	});
@@ -36,10 +35,8 @@ templ Index(user goth.User, imgs []string) {
 		const img = div.querySelector("img")
 
 		img.classList.add("opacity-0", "transition-opacity", "duration-200")
-
 		const loaded = () => {
 			img.classList.add("opacity-100")
-			console.log("added")
 		}
 		if (img.complete) {
 			loaded()
@@ -48,5 +45,5 @@ templ Index(user goth.User, imgs []string) {
 		}
 	})
 </script>
-	}
+}
 }
